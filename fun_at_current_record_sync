@@ -1,0 +1,101 @@
+-- FUNCTION: GPO.fun_at_current_record_sync()
+
+-- DROP FUNCTION IF EXISTS "GPO".fun_at_current_record_sync();
+
+CREATE OR REPLACE FUNCTION "GPO".fun_at_current_record_sync(
+	)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+    last_month TEXT := to_char(CURRENT_DATE - INTERVAL '1 month', 'YYYYMM');
+    sholud_table TEXT :='at_current_record_' || last_month;
+
+    -- 清空子表
+    T_table TEXT := 'TRUNCATE TABLE '|| sholud_table ;
+
+    -- 匯入資料
+
+    into_table TEXT :=
+        'INSERT INTO '|| sholud_table ||'
+        (
+            current_record_id,
+            money_type,
+            account_id,
+            create_user,
+            create_date_time,
+            trade_limit,
+            existing_limit,
+            remark,
+            priject,
+            trade_type,
+            money,
+            lottery_id,
+            betting_code,
+            status,
+            flag,
+            currency_id,
+            update_time,
+            account1,
+            rate,
+            member_account,
+            account5,
+            agent_account,
+            account2,
+            account3,
+            account4,
+            weixin_temp,
+            weixin_nickname,
+            type,
+            trade_type_sub,
+            member_remark
+        ) 
+        SELECT * FROM dblink
+        (
+            ''hostaddr=10.15.62.12 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733'',
+            ''SELECT *
+            FROM '|| sholud_table ||'''
+        ) 
+        AS t1(
+            current_record_id bigint,
+            money_type integer,
+            account_id integer,
+            create_user character varying COLLATE pg_catalog."default",
+            create_date_time timestamp without time zone,
+            trade_limit numeric(19,5),
+            existing_limit numeric(19,5),
+            remark character varying COLLATE pg_catalog."default",
+            priject character varying COLLATE pg_catalog."default",
+            trade_type character varying COLLATE pg_catalog."default",
+            money numeric(19,5),
+            lottery_id integer,
+            betting_code character varying COLLATE pg_catalog."default",
+            status integer,
+            flag integer,
+            currency_id integer,
+            update_time timestamp without time zone,
+            account1 integer,
+            rate integer,
+            member_account character varying COLLATE pg_catalog."default",
+            account5 integer,
+            agent_account character varying COLLATE pg_catalog."default",
+            account2 integer,
+            account3 integer,
+            account4 integer,
+            weixin_temp character varying(255) COLLATE pg_catalog."default",
+            weixin_nickname character varying(255) COLLATE pg_catalog."default",
+            type character varying(50) COLLATE pg_catalog."default",
+            trade_type_sub character varying(255) COLLATE pg_catalog."default",
+            member_remark character varying(200) COLLATE pg_catalog."default"
+        )';
+
+BEGIN
+EXECUTE T_table ;
+EXECUTE into_table;
+END;
+$BODY$;
+
+ALTER FUNCTION "GPO".fun_at_current_record_sync()
+    OWNER TO "PcHTa4478A";
