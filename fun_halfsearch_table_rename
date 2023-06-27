@@ -1,0 +1,164 @@
+-- FUNCTION: GPO.fun_halfsearch_table_rename()
+
+-- DROP FUNCTION IF EXISTS "GPO".fun_halfsearch_table_rename();
+
+CREATE OR REPLACE FUNCTION "GPO".fun_halfsearch_table_rename(
+	)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+
+BEGIN
+	----rename正在使用的表成t1
+	ALTER TABLE api_betting_detail RENAME TO api_betting_detail_t1;
+
+	ALTER TABLE at_account RENAME TO at_account_t1;
+
+	ALTER TABLE at_current_record_stretch RENAME TO at_current_record_stretch_t1;
+
+	ALTER TABLE at_current_total RENAME TO at_current_total_t1;
+
+	ALTER TABLE at_member_login RENAME TO at_member_login_t1;
+
+	ALTER TABLE ge_login RENAME TO ge_login_t1;
+
+	ALTER TABLE ge_station RENAME TO ge_station_t1;
+
+	ALTER TABLE mny_currency RENAME TO mny_currency_t1;
+
+	ALTER TABLE mny_level_currency RENAME TO mny_level_currency_t1;
+
+	ALTER TABLE mny_levelmanagement RENAME TO mny_levelmanagement_t1;
+
+	ALTER TABLE mny_pre_realtime_record RENAME TO mny_pre_realtime_record_t1;
+
+	ALTER TABLE rebate_betting_record RENAME TO rebate_betting_record_t1;
+
+	ALTER TABLE sys_log_url RENAME TO sys_log_url_t1;
+
+	ALTER TABLE sys_run_date RENAME TO sys_run_date_t1;
+
+	ALTER TABLE tps_account_info RENAME TO tps_account_info_t1;
+
+	ALTER TABLE tps_game_manage RENAME TO tps_game_manage_t1;
+
+	ALTER TABLE tps_game_manage_station RENAME TO tps_game_manage_station_t1;
+
+	ALTER TABLE tps_game_type RENAME TO tps_game_type_t1;
+
+	ALTER TABLE tps_platform RENAME TO tps_platform_t1;
+
+	ALTER TABLE tps_platform_display_set RENAME TO tps_platform_display_set_t1;
+
+	ALTER TABLE tps_platform_info RENAME TO tps_platform_info_t1;
+
+	ALTER TABLE tps_pre_realtime_item RENAME TO tps_pre_realtime_item_t1;
+
+	ALTER TABLE yuebao_cash_flow RENAME TO yuebao_cash_flow_t1;
+
+	ALTER TABLE account_money_hour RENAME TO account_money_hour_t1;
+
+	----rename匯好資料的temp表成生產
+	ALTER TABLE api_betting_detail_temp RENAME TO api_betting_detail;
+
+	ALTER TABLE at_account_temp RENAME TO at_account;
+
+	ALTER TABLE at_current_record_stretch_temp RENAME TO at_current_record_stretch;
+
+	ALTER TABLE at_current_total_temp RENAME TO at_current_total;
+
+	ALTER TABLE at_member_login_temp RENAME TO at_member_login;
+
+	ALTER TABLE ge_login_temp RENAME TO ge_login;
+
+	ALTER TABLE ge_station_temp RENAME TO ge_station;
+
+	ALTER TABLE mny_currency_temp RENAME TO mny_currency;
+
+	ALTER TABLE mny_level_currency_temp RENAME TO mny_level_currency;
+
+	ALTER TABLE mny_levelmanagement_temp RENAME TO mny_levelmanagement;
+
+	ALTER TABLE mny_pre_realtime_record_temp RENAME TO mny_pre_realtime_record;
+
+	ALTER TABLE rebate_betting_record_temp RENAME TO rebate_betting_record;
+
+	ALTER TABLE sys_log_url_temp RENAME TO sys_log_url;
+
+	ALTER TABLE sys_run_date_temp RENAME TO sys_run_date;
+
+	ALTER TABLE tps_account_info_temp RENAME TO tps_account_info;
+
+	ALTER TABLE tps_game_manage_temp RENAME TO tps_game_manage;
+
+	ALTER TABLE tps_game_manage_station_temp RENAME TO tps_game_manage_station;
+
+	ALTER TABLE tps_game_type_temp RENAME TO tps_game_type;
+
+	ALTER TABLE tps_platform_temp RENAME TO tps_platform;
+
+	ALTER TABLE tps_platform_display_set_temp RENAME TO tps_platform_display_set;
+
+	ALTER TABLE tps_platform_info_temp RENAME TO tps_platform_info;
+
+	ALTER TABLE tps_pre_realtime_item_temp RENAME TO tps_pre_realtime_item;
+
+	ALTER TABLE yuebao_cash_flow_temp RENAME TO yuebao_cash_flow;
+
+	ALTER TABLE account_money_hour_temp RENAME TO account_money_hour;
+
+	----把T1表改回temp
+	ALTER TABLE api_betting_detail_t1 RENAME TO api_betting_detail_temp;
+
+	ALTER TABLE at_account_t1 RENAME TO at_account_temp;
+
+	ALTER TABLE at_current_record_stretch_t1 RENAME TO at_current_record_stretch_temp;
+
+	ALTER TABLE at_current_total_t1 RENAME TO at_current_total_temp;
+
+	ALTER TABLE at_member_login_t1 RENAME TO at_member_login_temp;
+
+	ALTER TABLE ge_login_t1 RENAME TO ge_login_temp;
+
+	ALTER TABLE ge_station_t1 RENAME TO ge_station_temp;
+
+	ALTER TABLE mny_currency_t1 RENAME TO mny_currency_temp;
+
+	ALTER TABLE mny_level_currency_t1 RENAME TO mny_level_currency_temp;
+
+	ALTER TABLE mny_levelmanagement_t1 RENAME TO mny_levelmanagement_temp;
+
+	ALTER TABLE mny_pre_realtime_record_t1 RENAME TO mny_pre_realtime_record_temp;
+
+	ALTER TABLE rebate_betting_record_t1 RENAME TO rebate_betting_record_temp;
+
+	ALTER TABLE sys_log_url_t1 RENAME TO sys_log_url_temp;
+
+	ALTER TABLE sys_run_date_t1 RENAME TO sys_run_date_temp;
+
+	ALTER TABLE tps_account_info_t1 RENAME TO tps_account_info_temp;
+
+	ALTER TABLE tps_game_manage_t1 RENAME TO tps_game_manage_temp;
+
+	ALTER TABLE tps_game_manage_station_t1 RENAME TO tps_game_manage_station_temp;
+
+	ALTER TABLE tps_game_type_t1 RENAME TO tps_game_type_temp;
+
+	ALTER TABLE tps_platform_t1 RENAME TO tps_platform_temp;
+
+	ALTER TABLE tps_platform_display_set_t1 RENAME TO tps_platform_display_set_temp;
+
+	ALTER TABLE tps_platform_info_t1 RENAME TO tps_platform_info_temp;
+
+	ALTER TABLE tps_pre_realtime_item_t1 RENAME TO tps_pre_realtime_item_temp;
+
+	ALTER TABLE yuebao_cash_flow_t1 RENAME TO yuebao_cash_flow_temp;
+
+	ALTER TABLE account_money_hour_t1 RENAME TO account_money_hour_temp;
+END;
+$BODY$;
+
+ALTER FUNCTION "GPO".fun_halfsearch_table_rename()
+    OWNER TO "PcHTa4478A";
