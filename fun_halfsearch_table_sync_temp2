@@ -1,0 +1,81 @@
+CREATE
+	OR REPLACE FUNCTION "GPO".fun_halfsearch_table_sync_temp2 ()
+RETURNS void LANGUAGE 'plpgsql' COST 100 VOLATILE PARALLEL UNSAFE AS $BODY$
+
+BEGIN
+	---edit by Manson
+	---1 truncate table
+	TRUNCATE TABLE mny_event_details_temp;
+
+	TRUNCATE TABLE tps_event_details_temp;
+
+	TRUNCATE TABLE rebate_game_category_temp;
+
+	---2 insert到temp
+	INSERT INTO mny_event_details_temp (
+		details_id,
+		member_id,
+		create_user,
+		create_time,
+		update_user,
+		update_time,
+		backdrop_state,
+		stockholder_id,
+		event_id,
+		eventuuid,
+		count_money,
+		STATUS,
+		pre_realtime_record_ids
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.12 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_event_details') AS t1(details_id INTEGER, member_id INTEGER, create_user CHARACTER VARYING, create_time TIMESTAMP without TIME zone, update_user CHARACTER VARYING, update_time TIMESTAMP without TIME zone, backdrop_state CHARACTER VARYING, stockholder_id INTEGER, event_id INTEGER, eventuuid CHARACTER VARYING(36), count_money NUMERIC(25, 2), STATUS INTEGER, pre_realtime_record_ids BIGINT []);
+
+	INSERT INTO rebate_game_category_temp (
+		id,
+		platform_code,
+		platform_name,
+		game_id,
+		game_name,
+		category_code,
+		category_name,
+		use_type,
+		sort_factor
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.12 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from rebate_game_category') AS t1(id INTEGER, platform_code CHARACTER VARYING(20), platform_name CHARACTER VARYING, game_id CHARACTER VARYING(20), game_name CHARACTER VARYING, category_code CHARACTER VARYING(20), category_name CHARACTER VARYING, use_type CHARACTER VARYING(3), sort_factor NUMERIC(6, 5));
+
+	INSERT INTO tps_event_details_temp (
+		id,
+		platform,
+		game_code,
+		bet_total,
+		pre,
+		member_id,
+		event_uuid
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.12 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from tps_event_details') AS t1(id INTEGER, platform CHARACTER VARYING(20), game_code CHARACTER VARYING(20), bet_total NUMERIC(19, 5), pre NUMERIC(19, 5), member_id INTEGER, event_uuid CHARACTER VARYING(100));
+
+	---3 rename table to t1                                              
+	ALTER TABLE mny_event_details RENAME TO mny_event_details_t1;
+
+	ALTER TABLE tps_event_details RENAME TO tps_event_details_t1;
+
+	ALTER TABLE rebate_game_category RENAME TO rebate_game_category_t1;
+
+	---4 rename temp table
+	ALTER TABLE mny_event_details_temp RENAME TO mny_event_details;
+
+	ALTER TABLE tps_event_details_temp RENAME TO tps_event_details;
+
+	ALTER TABLE rebate_game_category_temp RENAME TO rebate_game_category;
+
+	---5 rename t1 to temp
+	ALTER TABLE mny_event_details_t1 RENAME TO mny_event_details_temp;
+
+	ALTER TABLE tps_event_details_t1 RENAME TO tps_event_details_temp;
+
+	ALTER TABLE rebate_game_category_t1 RENAME TO rebate_game_category_temp;
+END;$BODY$;
+
+ALTER FUNCTION "GPO".fun_halfsearch_table_sync_temp2 () OWNER TO "PcHTa4478A";
