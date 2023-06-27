@@ -1,0 +1,247 @@
+CREATE
+	OR REPLACE FUNCTION "GPO".fun_halfsearch_table_sync_temp ()
+RETURNS void LANGUAGE 'plpgsql' COST 100 VOLATILE PARALLEL UNSAFE AS $BODY$
+
+BEGIN
+	---edit by Manson
+	---1 truncate table
+	TRUNCATE TABLE mny_merchant_record_temp;
+
+	TRUNCATE TABLE mny_companyaccount_temp;
+
+	TRUNCATE TABLE recharge_manage_base_temp;
+
+	TRUNCATE TABLE mny_bank_list_temp;
+
+	TRUNCATE TABLE yuebao_funds_pool_temp;
+
+	TRUNCATE TABLE mny_com_record_temp;
+
+	---2 insert到temp
+	INSERT INTO mny_merchant_record_temp (
+		id,
+		amount,
+		account,
+		levelname,
+		levelno,
+		STATUS,
+		paysystem,
+		remark,
+		createtime,
+		email,
+		phone,
+		memberid,
+		stockholderid,
+		memid,
+		merchant_id,
+		youhui,
+		levelid,
+		orderno,
+		merchantno,
+		manaual,
+		pay_call_date,
+		bank_key,
+		banktype,
+		wx_account,
+		wx_nickname,
+		wx_temp,
+		device,
+		payer_name
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.12 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_merchant_record') AS t1(id INTEGER, amount NUMERIC(19, 5), account CHARACTER VARYING(255), levelname CHARACTER VARYING(255), levelno INTEGER, STATUS INTEGER, paysystem CHARACTER VARYING(255), remark CHARACTER VARYING(1000), createtime TIMESTAMP without TIME zone, email CHARACTER VARYING(100), phone CHARACTER VARYING(50), memberid INTEGER, stockholderid INTEGER, memid INTEGER, merchant_id INTEGER, youhui CHARACTER VARYING, levelid INTEGER, orderno CHARACTER VARYING, merchantno CHARACTER VARYING, manaual INTEGER, pay_call_date TIMESTAMP without TIME zone, bank_key CHARACTER VARYING(100), banktype INTEGER, wx_account CHARACTER VARYING(255), wx_nickname CHARACTER VARYING(255), wx_temp CHARACTER VARYING(255), device INTEGER, payer_name CHARACTER VARYING(50));
+
+	INSERT INTO mny_companyaccount_temp (
+		companyaccount_id,
+		currency_id,
+		ddgd_id,
+		bank_id,
+		bankaccount,
+		prompt,
+		chamberlain,
+		bankstation,
+		mbankaccount,
+		SHUTDOWN,
+		isdetele,
+		founder,
+		foundtime,
+		moder,
+		modtime,
+		qr_code,
+		max_deposit,
+		curr_deposit,
+		accountorder,
+		online_bank_name,
+		online_bank_account,
+		isbank,
+		merchant_comment,
+		ask_status,
+		min_deposit_amount,
+		max_deposit_amount,
+		currency,
+		exchange_rate,
+		maximum_discount
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.12 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_companyaccount') AS t1(companyaccount_id INTEGER, currency_id INTEGER, ddgd_id INTEGER, bank_id INTEGER, bankaccount CHARACTER VARYING, prompt CHARACTER VARYING, chamberlain CHARACTER VARYING(200), bankstation CHARACTER VARYING, mbankaccount CHARACTER VARYING(200), SHUTDOWN INTEGER, isdetele INTEGER, founder CHARACTER VARYING, foundtime TIMESTAMP without TIME zone, moder CHARACTER VARYING, modtime TIMESTAMP without TIME zone, qr_code CHARACTER VARYING(100), max_deposit DOUBLE PRECISION, curr_deposit DOUBLE PRECISION, accountorder INTEGER, online_bank_name CHARACTER VARYING(50), online_bank_account CHARACTER VARYING(50), isbank INTEGER, merchant_comment TEXT, ask_status INTEGER, min_deposit_amount NUMERIC(19, 5), max_deposit_amount NUMERIC(19, 5), currency CHARACTER VARYING(50), exchange_rate NUMERIC(19, 5), maximum_discount NUMERIC(19, 5));
+
+	INSERT INTO recharge_manage_base_temp (
+		id,
+		name,
+		recharge_type,
+		recharge_type_id,
+		order_index,
+		online_or_offline,
+		picture_address,
+		terminal,
+		income_name,
+		pay_type,
+		is_show
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.12 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from recharge_manage_base') AS t1(id INTEGER, name CHARACTER VARYING(50), recharge_type CHARACTER VARYING(50), recharge_type_id INTEGER, order_index INTEGER, online_or_offline INTEGER, picture_address CHARACTER VARYING(255), terminal INTEGER, income_name CHARACTER VARYING(255), pay_type CHARACTER VARYING(50), is_show SMALLINT);
+
+	INSERT INTO mny_bank_list_temp (
+		id,
+		bankname,
+		bankkey,
+		banktype,
+		isbank,
+		sortnum
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.12 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_bank_list') AS t1(id INTEGER, bankname CHARACTER VARYING(255), bankkey CHARACTER VARYING(50), banktype INTEGER, isbank INTEGER, sortnum INTEGER);
+
+	INSERT INTO yuebao_funds_pool_temp (
+		id,
+		account1,
+		member_id,
+		member_account,
+		amount,
+		level_id,
+		level_name,
+		deposit_time,
+		end_time,
+		withdraw_time,
+		interest_rate,
+		addition_interest_rate,
+		interest_cycle,
+		interest,
+		withdraw_account,
+		end_account,
+		STATUS,
+		remark,
+		type,
+		deposit_bill_no,
+		withdraw_bill_no,
+		trade_type,
+		member_remark,
+		deposit_device,
+		draw_device,
+		org_deposit_bill_no,
+		partial_withdraw_amount
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.12 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from yuebao_funds_pool') AS t1(id INTEGER, account1 INTEGER, member_id INTEGER, member_account CHARACTER VARYING(50), amount NUMERIC(19, 5), level_id INTEGER, level_name CHARACTER VARYING(50), deposit_time TIMESTAMP (6), end_time TIMESTAMP (6), withdraw_time TIMESTAMP (6), interest_rate NUMERIC(7, 4), addition_interest_rate NUMERIC(7, 4), interest_cycle INTEGER, interest NUMERIC(19, 5), withdraw_account CHARACTER VARYING(50), end_account CHARACTER VARYING(50), STATUS SMALLINT, remark CHARACTER VARYING(500), type CHARACTER VARYING(5), deposit_bill_no CHARACTER VARYING(50), withdraw_bill_no CHARACTER VARYING(50), trade_type INTEGER, member_remark CHARACTER VARYING(200), deposit_device INTEGER, draw_device INTEGER, org_deposit_bill_no CHARACTER VARYING(50), partial_withdraw_amount NUMERIC(19, 5));
+
+	INSERT INTO mny_com_record_temp (
+		com_record_id,
+		order_no,
+		level_id,
+		partner_id,
+		member_id,
+		deposit_type,
+		deposit_money,
+		deposit_pre,
+		other_pre,
+		STATUS,
+		create_user,
+		create_time,
+		update_user,
+		update_time,
+		system_time,
+		deposit_pre_status,
+		other_pre_status,
+		comp_bet_check_status,
+		comp_bet,
+		normal_check_status,
+		deposit_project_id,
+		deposit_money_remark,
+		deposit_pre_remark,
+		other_pre_remark,
+		stockholder_id,
+		currency_id,
+		bank_account_id,
+		bb_limit,
+		comp_num_check,
+		deposit_man_name,
+		pre_rem_per_check,
+		member_deposit_bank_id,
+		mem_bank_account,
+		mem_bank_name,
+		level_name,
+		account1,
+		account2,
+		account3,
+		account4,
+		account5,
+		rate,
+		account,
+		type,
+		agent_account,
+		chamberlain,
+		company_bank_id,
+		wx_account,
+		wx_nickname,
+		isbank,
+		device,
+		mapping_index,
+		usdt_number,
+		exchange_rate,
+		currency
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.12 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_com_record') AS t1(com_record_id INTEGER, order_no CHARACTER VARYING, level_id INTEGER, partner_id INTEGER, member_id INTEGER, deposit_type CHARACTER VARYING, deposit_money NUMERIC, deposit_pre NUMERIC, other_pre NUMERIC, STATUS INTEGER, create_user CHARACTER VARYING, create_time TIMESTAMP without TIME zone, update_user CHARACTER VARYING, update_time TIMESTAMP without TIME zone, system_time TIMESTAMP without TIME zone, deposit_pre_status INTEGER, other_pre_status INTEGER, comp_bet_check_status INTEGER, comp_bet NUMERIC(19, 5), normal_check_status INTEGER, deposit_project_id INTEGER, deposit_money_remark CHARACTER VARYING, deposit_pre_remark CHARACTER VARYING, other_pre_remark CHARACTER VARYING, stockholder_id INTEGER, currency_id INTEGER, bank_account_id INTEGER, bb_limit NUMERIC(19, 5), comp_num_check INTEGER, deposit_man_name CHARACTER VARYING, pre_rem_per_check INTEGER, member_deposit_bank_id INTEGER, 
+			mem_bank_account CHARACTER VARYING, mem_bank_name CHARACTER VARYING, level_name CHARACTER VARYING(50), account1 INTEGER, account2 INTEGER, account3 INTEGER, account4 INTEGER, account5 INTEGER, rate INTEGER, account CHARACTER VARYING(50), type CHARACTER VARYING(50), agent_account CHARACTER VARYING(30), chamberlain CHARACTER VARYING(200), company_bank_id INTEGER, wx_account CHARACTER VARYING(255), wx_nickname CHARACTER VARYING(255), isbank INTEGER, device INTEGER, mapping_index INTEGER, usdt_number CHARACTER VARYING, exchange_rate CHARACTER VARYING, currency CHARACTER VARYING);
+
+	---3 rename table to t1                                              
+	ALTER TABLE mny_merchant_record RENAME TO mny_merchant_record_t1;
+
+	ALTER TABLE mny_companyaccount RENAME TO mny_companyaccount_t1;
+
+	ALTER TABLE recharge_manage_base RENAME TO recharge_manage_base_t1;
+
+	ALTER TABLE mny_bank_list RENAME TO mny_bank_list_t1;
+
+	ALTER TABLE yuebao_funds_pool RENAME TO yuebao_funds_pool_t1;
+
+	ALTER TABLE mny_com_record RENAME TO mny_com_record_t1;
+
+	---4 rename temp table
+	ALTER TABLE mny_merchant_record_temp RENAME TO mny_merchant_record;
+
+	ALTER TABLE mny_companyaccount_temp RENAME TO mny_companyaccount;
+
+	ALTER TABLE recharge_manage_base_temp RENAME TO recharge_manage_base;
+
+	ALTER TABLE mny_bank_list_temp RENAME TO mny_bank_list;
+
+	ALTER TABLE yuebao_funds_pool_temp RENAME TO yuebao_funds_pool;
+
+	ALTER TABLE mny_com_record_temp RENAME TO mny_com_record;
+
+	---rename t1 to temp
+	ALTER TABLE mny_merchant_record_t1 RENAME TO mny_merchant_record_temp;
+
+	ALTER TABLE mny_companyaccount_t1 RENAME TO mny_companyaccount_temp;
+
+	ALTER TABLE recharge_manage_base_t1 RENAME TO recharge_manage_base_temp;
+
+	ALTER TABLE mny_bank_list_t1 RENAME TO mny_bank_list_temp;
+
+	ALTER TABLE yuebao_funds_pool_t1 RENAME TO yuebao_funds_pool_temp;
+
+	ALTER TABLE mny_com_record_t1 RENAME TO mny_com_record_temp;
+END;$BODY$;
+
+ALTER FUNCTION "GPO".fun_halfsearch_table_sync_temp () OWNER TO "PcHTa4478A";
