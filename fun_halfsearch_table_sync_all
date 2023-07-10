@@ -1,0 +1,1070 @@
+CREATE
+	OR REPLACE FUNCTION "GPO".fun_halfsearch_table_sync_all ()
+RETURNS void LANGUAGE 'plpgsql' COST 100 VOLATILE PARALLEL UNSAFE AS $BODY$
+
+BEGIN
+	---edit by Manson
+	---step 1 truncate table
+	TRUNCATE TABLE api_betting_detail_temp;
+
+	TRUNCATE TABLE at_account_temp;
+
+	TRUNCATE TABLE at_current_record_stretch_temp;
+
+	TRUNCATE TABLE at_current_total_temp;
+
+	TRUNCATE TABLE at_member_login_temp;
+
+	TRUNCATE TABLE ge_login_temp;
+
+	TRUNCATE TABLE ge_station_temp;
+
+	TRUNCATE TABLE mny_currency_temp;
+
+	TRUNCATE TABLE mny_level_currency_temp;
+
+	TRUNCATE TABLE mny_levelmanagement_temp;
+
+	TRUNCATE TABLE mny_pre_realtime_record_temp;
+
+	TRUNCATE TABLE rebate_betting_record_temp;
+
+	TRUNCATE TABLE sys_log_url_temp;
+
+	TRUNCATE TABLE sys_run_date_temp;
+
+	TRUNCATE TABLE tps_account_info_temp;
+
+	TRUNCATE TABLE tps_game_manage_temp;
+
+	TRUNCATE TABLE tps_game_manage_station_temp;
+
+	TRUNCATE TABLE tps_game_type_temp;
+
+	TRUNCATE TABLE tps_platform_temp;
+
+	TRUNCATE TABLE tps_platform_display_set_temp;
+
+	TRUNCATE TABLE tps_platform_info_temp;
+
+	TRUNCATE TABLE tps_pre_realtime_item_temp;
+
+	TRUNCATE TABLE yuebao_cash_flow_temp;
+
+	TRUNCATE TABLE account_money_hour_temp;
+
+	TRUNCATE TABLE mny_merchant_record_temp;
+
+	TRUNCATE TABLE mny_companyaccount_temp;
+
+	TRUNCATE TABLE recharge_manage_base_temp;
+
+	TRUNCATE TABLE mny_bank_list_temp;
+
+	TRUNCATE TABLE yuebao_funds_pool_temp;
+
+	TRUNCATE TABLE mny_com_record_temp;
+
+	TRUNCATE TABLE mny_event_details_temp;
+
+	TRUNCATE TABLE tps_event_details_temp;
+
+	TRUNCATE TABLE rebate_game_category_temp;
+
+	TRUNCATE TABLE sn_info_temp;
+
+	---step 2 insert到temp
+	INSERT INTO api_betting_detail_temp (
+		id,
+		account,
+		account0,
+		account1,
+		account2,
+		account3,
+		account4,
+		account5,
+		account6,
+		betting_num,
+		betting_amount,
+		profit_loss,
+		real_betting_amount,
+		import_batch_id,
+		betting_date,
+		platform,
+		progressive_amount,
+		progressive_pool,
+		station_durl,
+		type
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from api_betting_detail') AS t1(id INTEGER, account CHARACTER VARYING(20), account0 INTEGER, account1 INTEGER, account2 INTEGER, account3 INTEGER, account4 INTEGER, account5 INTEGER, account6 INTEGER, betting_num INTEGER, betting_amount NUMERIC(25, 5), profit_loss NUMERIC(25, 5), real_betting_amount NUMERIC(25, 5), import_batch_id INTEGER, betting_date DATE, platform CHARACTER VARYING(20), progressive_amount NUMERIC(25, 5), progressive_pool NUMERIC(25, 5), station_durl CHARACTER VARYING(200), type CHARACTER VARYING(3));
+
+	INSERT INTO at_account_temp (
+		id,
+		account,
+		name,
+		pwd,
+		ROLE,
+		remark,
+		create_user,
+		create_time,
+		update_user,
+		update_time,
+		login_time,
+		login_back,
+		login_num,
+		login_ip,
+		error_num,
+		blacklist,
+		old_account,
+		isonline,
+		type,
+		money_type,
+		check_status,
+		login_day_number,
+		account1,
+		account2,
+		account3,
+		account4,
+		account5,
+		account0,
+		account6,
+		parent_id,
+		rate,
+		use_status,
+		betting_status,
+		agent_no,
+		agent_is_verify,
+		mem_is_verify,
+		jointime,
+		level_id,
+		locking,
+		currency_id,
+		session_id,
+		detail_flag,
+		hg_reg,
+		ea_reg,
+		bb_reg,
+		api_pre_code,
+		dmic_pwd,
+		ag_reg,
+		draw_money_max_limit,
+		mg_password,
+		pt_password,
+		og_login_status,
+		agent_account,
+		register_ip,
+		transfer_money_status,
+		last_login_platform,
+		batch_money_max_limit,
+		monthly_statement_pwd,
+		weixin_key,
+		weixin_temp,
+		weixin_nickname,
+		weixin_tacc,
+		headimgurl,
+		rapid_money_max_limit,
+		is_init_password,
+		money_status,
+		promotion_status,
+		modify_password_time
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from at_account') AS t1(id INTEGER, account CHARACTER VARYING(50), name CHARACTER VARYING(50), pwd CHARACTER VARYING(50), ROLE CHARACTER VARYING(50), remark CHARACTER VARYING(200), create_user CHARACTER VARYING(50), create_time TIMESTAMP without TIME zone, update_user CHARACTER VARYING(50), update_time TIMESTAMP without TIME zone, login_time TIMESTAMP without TIME zone, login_back TIMESTAMP without TIME zone, login_num INTEGER, login_ip CHARACTER VARYING(100), error_num INTEGER, blacklist CHARACTER VARYING COLLATE pg_catalog."default", old_account CHARACTER VARYING(50) COLLATE pg_catalog."default", isonline CHARACTER VARYING(1) COLLATE pg_catalog."default", type CHARACTER VARYING(50) COLLATE pg_catalog."default", money_type CHARACTER VARYING(1) COLLATE pg_catalog."default", check_status CHARACTER VARYING(1) COLLATE pg_catalog."default", login_day_number INTEGER, account1 INTEGER, account2 INTEGER, account3 INTEGER
+			, account4 INTEGER, account5 INTEGER, account0 INTEGER, account6 INTEGER, parent_id INTEGER, rate INTEGER, use_status INTEGER, betting_status INTEGER, agent_no CHARACTER VARYING(15) COLLATE pg_catalog."default", agent_is_verify CHARACTER VARYING(1) COLLATE pg_catalog."default", mem_is_verify CHARACTER VARYING(1) COLLATE pg_catalog."default", jointime TIMESTAMP without TIME zone, level_id INTEGER, locking INTEGER, currency_id INTEGER, session_id CHARACTER VARYING(100) COLLATE pg_catalog."default", detail_flag CHARACTER VARYING(1) COLLATE pg_catalog."default", hg_reg INTEGER, ea_reg INTEGER, bb_reg INTEGER, api_pre_code CHARACTER VARYING COLLATE pg_catalog."default", dmic_pwd CHARACTER VARYING COLLATE pg_catalog."default", ag_reg INTEGER, draw_money_max_limit NUMERIC(19, 2), mg_password CHARACTER VARYING(20) COLLATE pg_catalog."default", pt_password CHARACTER VARYING(20) COLLATE pg_catalog."default", og_login_status INTEGER, agent_account CHARACTER VARYING(20) COLLATE pg_catalog."default", register_ip CHARACTER VARYING(100) COLLATE pg_catalog."default", 
+			transfer_money_status INTEGER, last_login_platform CHARACTER VARYING(50) COLLATE pg_catalog."default", batch_money_max_limit NUMERIC(19, 2), monthly_statement_pwd CHARACTER VARYING(50) COLLATE pg_catalog."default", weixin_key CHARACTER VARYING(255) COLLATE pg_catalog."default", weixin_temp CHARACTER VARYING(255) COLLATE pg_catalog."default", weixin_nickname CHARACTER VARYING(255) COLLATE pg_catalog."default", weixin_tacc CHARACTER VARYING(255) COLLATE pg_catalog."default", headimgurl CHARACTER VARYING(255) COLLATE pg_catalog."default", rapid_money_max_limit NUMERIC(19, 2), is_init_password INTEGER, money_status INTEGER, promotion_status SMALLINT, modify_password_time TIMESTAMP (6));
+
+	INSERT INTO at_current_record_stretch_temp (
+		id,
+		current_record_id,
+		stretch_remark,
+		stretch_betting_code
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from at_current_record_stretch') AS t1(id BIGINT, current_record_id BIGINT, stretch_remark CHARACTER VARYING COLLATE pg_catalog."default", stretch_betting_code CHARACTER VARYING COLLATE pg_catalog."default");
+
+	INSERT INTO at_current_total_temp (
+		id,
+		account1,
+		account5,
+		account6,
+		agent_account,
+		member_account,
+		company_income,
+		member_draw,
+		online_come,
+		coupon,
+		manual_income,
+		draw,
+		draw_fee,
+		defect,
+		show_date,
+		currency_id,
+		company_income_person_num,
+		member_draw_person_num,
+		online_income_person_num,
+		coupon_person_num,
+		manual_income_person_num,
+		draw_person_num,
+		draw_fee_person_num,
+		defect_person_num,
+		type,
+		promotion_rebate,
+		promotion_rebate_person_num,
+		yuebao_draw,
+		yuebao_draw_person_num,
+		yuebao_income,
+		yuebao_income_person_num
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from at_current_total') AS t1(id INTEGER, account1 INTEGER, account5 INTEGER, account6 INTEGER, agent_account CHARACTER VARYING COLLATE pg_catalog."default", member_account CHARACTER VARYING COLLATE pg_catalog."default", company_income NUMERIC(19, 2), member_draw NUMERIC(19, 2), online_come NUMERIC(19, 2), coupon NUMERIC(19, 2), manual_income NUMERIC(19, 2), draw NUMERIC(19, 2), draw_fee NUMERIC(19, 2), defect NUMERIC(19, 2), show_date DATE, currency_id INTEGER, company_income_person_num INTEGER, member_draw_person_num INTEGER, online_income_person_num INTEGER, coupon_person_num INTEGER, manual_income_person_num INTEGER, draw_person_num INTEGER, draw_fee_person_num INTEGER, defect_person_num INTEGER, type CHARACTER VARYING(5) COLLATE pg_catalog."default", promotion_rebate NUMERIC(19, 2), promotion_rebate_person_num INTEGER, yuebao_draw NUMERIC(19, 2), yuebao_draw_person_num INTEGER, yuebao_income NUMERIC(19, 2), 
+			yuebao_income_person_num INTEGER);
+
+	INSERT INTO at_member_login_temp (
+		account_id,
+		login_time,
+		login_back,
+		login_num,
+		login_ip,
+		error_num,
+		session_id
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from at_member_login') AS t1(account_id INTEGER, login_time TIMESTAMP (6) without TIME zone, login_back TIMESTAMP (6) without TIME zone, login_num INTEGER, login_ip CHARACTER VARYING(100) COLLATE pg_catalog."default", error_num INTEGER, session_id CHARACTER VARYING(100) COLLATE pg_catalog."default");
+
+	INSERT INTO ge_login_temp (
+		id,
+		account,
+		login_ip,
+		browser,
+		login_time,
+		create_user,
+		create_time,
+		update_user,
+		update_time,
+		remark,
+		account_id,
+		rate,
+		login_state,
+		STATUS,
+		account1,
+		account2,
+		account3,
+		account4,
+		account5,
+		type,
+		terminal,
+		login_location,
+		device
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from ge_login') AS t1(id INTEGER, account CHARACTER VARYING(50) COLLATE pg_catalog."default", login_ip CHARACTER VARYING(100) COLLATE pg_catalog."default", browser CHARACTER VARYING(50) COLLATE pg_catalog."default", login_time TIMESTAMP without TIME zone, create_user CHARACTER VARYING(50) COLLATE pg_catalog."default", create_time TIMESTAMP without TIME zone, update_user CHARACTER VARYING(50) COLLATE pg_catalog."default", update_time TIMESTAMP without TIME zone, remark CHARACTER VARYING(200) COLLATE pg_catalog."default", account_id INTEGER, rate CHARACTER VARYING(1) COLLATE pg_catalog."default", login_state CHARACTER VARYING COLLATE pg_catalog."default", STATUS INTEGER, account1 INTEGER, account2 INTEGER, account3 INTEGER, account4 INTEGER, account5 INTEGER, type CHARACTER VARYING(50) COLLATE pg_catalog."default", terminal INTEGER, login_location CHARACTER VARYING(50) COLLATE pg_catalog."default", device INTEGER);
+
+	INSERT INTO ge_station_temp (
+		name,
+		url,
+		parent_partner,
+		ftp,
+		remark,
+		STATUS,
+		id,
+		keys,
+		durl,
+		ftpname,
+		ftppwd,
+		ftppost,
+		account0,
+		account1,
+		account2,
+		account3,
+		account4,
+		account5,
+		week,
+		close_time,
+		open_time,
+		platform_type,
+		float_status,
+		login_validcode,
+		keywords,
+		color_style,
+		mongo_server_id,
+		trial_account_num,
+		trial_account_money,
+		new_durl,
+		baofoo_wechat_status,
+		template_id,
+		static_domain,
+		test_account_money,
+		platform_name,
+		app_status,
+		app_code,
+		station_code,
+		ip_reg_status,
+		update_ip_reg_time,
+		ip_reg_num,
+		app_domain,
+		special_login_status,
+		multi_channel_status,
+		promotion_storey_num,
+		promotion_betting_max_rebate,
+		member_profit_loss,
+		enable_native_pay,
+		data_source_type,
+		today_report_search,
+		send_to_es,
+		ip_reg_max_num,
+		close_mbr_time,
+		open_mbr_time,
+		data_source_map,
+		close_preback_time,
+		open_preback_time
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from ge_station') AS t1(name CHARACTER VARYING(20), url CHARACTER VARYING(200), parent_partner INTEGER, ftp CHARACTER VARYING(200), remark CHARACTER VARYING(200), STATUS CHARACTER VARYING(1), id INTEGER, keys CHARACTER VARYING(128), durl CHARACTER VARYING(200), ftpname CHARACTER VARYING(200), ftppwd CHARACTER VARYING(200), ftppost CHARACTER VARYING(200), account0 INTEGER, account1 INTEGER, account2 INTEGER, account3 INTEGER, account4 INTEGER, account5 INTEGER, week CHARACTER VARYING(5), close_time CHARACTER VARYING(50), open_time CHARACTER VARYING(50), platform_type CHARACTER VARYING, float_status INTEGER, login_validcode INTEGER, keywords CHARACTER VARYING, color_style CHARACTER VARYING(20), mongo_server_id INTEGER, trial_account_num INTEGER, trial_account_money NUMERIC(19, 5), new_durl CHARACTER VARYING(200), baofoo_wechat_status INTEGER, template_id INTEGER, static_domain CHARACTER VARYING(200), 
+			test_account_money NUMERIC(19, 5), platform_name CHARACTER VARYING(20), app_status CHARACTER VARYING(1), app_code CHARACTER VARYING(32), station_code CHARACTER VARYING(20), ip_reg_status INTEGER, update_ip_reg_time TIMESTAMP, ip_reg_num INTEGER, app_domain CHARACTER VARYING(200), special_login_status INTEGER, multi_channel_status INTEGER, promotion_storey_num INTEGER, promotion_betting_max_rebate NUMERIC(19, 4), member_profit_loss NUMERIC(19, 5), enable_native_pay SMALLINT, data_source_type SMALLINT, today_report_search SMALLINT, send_to_es SMALLINT, ip_reg_max_num INTEGER, close_mbr_time CHARACTER VARYING(50), open_mbr_time CHARACTER VARYING(50), data_source_map CHARACTER VARYING(100), close_preback_time CHARACTER VARYING(50), open_preback_time CHARACTER VARYING(50));
+
+	INSERT INTO mny_currency_temp (
+		currency_id,
+		currency_name,
+		currency_code
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_currency') AS t1(currency_id INTEGER, currency_name CHARACTER VARYING COLLATE pg_catalog."default", currency_code CHARACTER VARYING COLLATE pg_catalog."default");
+
+	INSERT INTO mny_level_currency_temp (
+		id,
+		level_id,
+		customize_id,
+		currency_id,
+		member_num,
+		account1
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_level_currency') AS t1(id INTEGER, level_id INTEGER, customize_id INTEGER, currency_id INTEGER, member_num INTEGER, account1 INTEGER);
+
+	INSERT INTO mny_levelmanagement_temp (
+		levelmanagement_id,
+		level_name,
+		level_description,
+		level_join_top,
+		level_join_down,
+		level_depositnum,
+		level_deposittotal,
+		level_maxdeposit,
+		level_collectnum,
+		level_collecttotal,
+		level_remark,
+		level_founder,
+		level_foundtime,
+		level_moder,
+		level_modtime,
+		level_replacetime,
+		level_ddstockholder,
+		count_status,
+		level_sort
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_levelmanagement') AS t1(levelmanagement_id INTEGER, level_name CHARACTER VARYING COLLATE pg_catalog."default", level_description CHARACTER VARYING COLLATE pg_catalog."default", level_join_top TIMESTAMP without TIME zone, level_join_down TIMESTAMP without TIME zone, level_depositnum INTEGER, level_deposittotal NUMERIC(19, 5), level_maxdeposit NUMERIC(19, 5), level_collectnum INTEGER, level_collecttotal NUMERIC(19, 5), level_remark CHARACTER VARYING COLLATE pg_catalog."default", level_founder CHARACTER VARYING COLLATE pg_catalog."default", level_foundtime TIMESTAMP without TIME zone, level_moder CHARACTER VARYING COLLATE pg_catalog."default", level_modtime TIMESTAMP without TIME zone, level_replacetime TIMESTAMP without TIME zone, level_ddstockholder INTEGER, count_status INTEGER, level_sort INTEGER);
+
+	INSERT INTO mny_pre_realtime_record_temp (
+		id,
+		account1,
+		account_id,
+		previous_bet_total_amount,
+		current_bet_total_amount,
+		previous_pre_total_amount,
+		current_pre_total_amount,
+		previous_record_ids,
+		STATUS,
+		betting_date,
+		set_type_id,
+		receive_time,
+		create_time,
+		create_user,
+		update_time,
+		update_user,
+		remark,
+		belong_date,
+		level_id,
+		day_receive_number
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_pre_realtime_record') AS t1(id BIGINT, account1 INTEGER, account_id INTEGER, previous_bet_total_amount NUMERIC(19, 2), current_bet_total_amount NUMERIC(19, 2), previous_pre_total_amount NUMERIC(19, 2), current_pre_total_amount NUMERIC(19, 2), previous_record_ids INTEGER, STATUS CHARACTER VARYING(50) COLLATE pg_catalog."default", betting_date DATE, set_type_id INTEGER, receive_time TIMESTAMP (0) without TIME zone, create_time TIMESTAMP (6) without TIME zone, create_user CHARACTER VARYING(50) COLLATE pg_catalog."default", update_time TIMESTAMP (6) without TIME zone, update_user CHARACTER VARYING(50) COLLATE pg_catalog."default", remark CHARACTER VARYING(255) COLLATE pg_catalog."default", belong_date DATE, level_id INTEGER, day_receive_number CHARACTER VARYING(32) COLLATE pg_catalog."default");
+
+	INSERT INTO rebate_betting_record_temp (
+		id,
+		account,
+		account0,
+		account1,
+		account2,
+		account3,
+		account4,
+		account5,
+		account6,
+		betting_num,
+		betting_amount,
+		profit_loss,
+		real_betting_amount,
+		betting_date,
+		platform,
+		category_code,
+		game_id,
+		progressive_amount,
+		progressive_pool,
+		type
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from rebate_betting_record') AS t1(id INTEGER, account CHARACTER VARYING(20) COLLATE pg_catalog."default", account0 INTEGER, account1 INTEGER, account2 INTEGER, account3 INTEGER, account4 INTEGER, account5 INTEGER, account6 INTEGER, betting_num INTEGER, betting_amount NUMERIC(25, 5), profit_loss NUMERIC(25, 5), real_betting_amount NUMERIC(25, 5), betting_date DATE, platform CHARACTER VARYING(20) COLLATE pg_catalog."default", category_code CHARACTER VARYING(20) COLLATE pg_catalog."default", game_id CHARACTER VARYING(20) COLLATE pg_catalog."default", progressive_amount NUMERIC(25, 5), progressive_pool NUMERIC(25, 5), type CHARACTER VARYING(3) COLLATE pg_catalog."default");
+
+	INSERT INTO sys_log_url_temp (
+		id,
+		accountid,
+		account,
+		url,
+		params,
+		actionname,
+		visitdate,
+		method,
+		domain,
+		account1,
+		zhparams,
+		type
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from sys_log_url') AS t1(id INTEGER, accountid INTEGER, account CHARACTER VARYING COLLATE pg_catalog."default", url CHARACTER VARYING COLLATE pg_catalog."default", params TEXT COLLATE pg_catalog."default", actionname CHARACTER VARYING COLLATE pg_catalog."default", visitdate TIMESTAMP without TIME zone, method CHARACTER VARYING(100) COLLATE pg_catalog."default", domain CHARACTER VARYING(200) COLLATE pg_catalog."default", account1 INTEGER, zhparams TEXT COLLATE pg_catalog."default", type CHARACTER VARYING(2) COLLATE pg_catalog."default");
+
+	INSERT INTO sys_run_date_temp (
+		id,
+		run_date,
+		remark
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from sys_run_date') AS t1(id INTEGER, run_date TIMESTAMP without TIME zone, remark CHARACTER VARYING(100) COLLATE pg_catalog."default");
+
+	INSERT INTO tps_account_info_temp (
+		id,
+		station_id,
+		account_id1,
+		platform,
+		partner,
+		sign,
+		web_site,
+		create_time,
+		update_time,
+		domain_id,
+		member_open,
+		agent_open,
+		order_in_member,
+		name_in_member
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from tps_account_info') AS t1(id INTEGER, station_id INTEGER, account_id1 INTEGER, platform CHARACTER VARYING(50) COLLATE pg_catalog."default", partner CHARACTER VARYING(500) COLLATE pg_catalog."default", sign CHARACTER VARYING(255) COLLATE pg_catalog."default", web_site CHARACTER VARYING(255) COLLATE pg_catalog."default", create_time TIMESTAMP (6) without TIME zone, update_time TIMESTAMP (6) without TIME zone, domain_id INTEGER, member_open INTEGER, agent_open INTEGER, order_in_member INTEGER, name_in_member CHARACTER VARYING(64) COLLATE pg_catalog."default");
+
+	INSERT INTO tps_game_manage_temp (
+		id,
+		category_name,
+		category_code,
+		parent_code,
+		parent_id,
+		category_level,
+		sort,
+		show_child,
+		category_img_url,
+		create_user,
+		create_time,
+		update_user,
+		update_time
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from tps_game_manage') AS t1(id INTEGER, category_name CHARACTER VARYING(100) COLLATE pg_catalog."default", category_code CHARACTER VARYING(20) COLLATE pg_catalog."default", parent_code CHARACTER VARYING(20) COLLATE pg_catalog."default", parent_id INTEGER, category_level SMALLINT, sort INTEGER, show_child SMALLINT, category_img_url CHARACTER VARYING(100) COLLATE pg_catalog."default", create_user CHARACTER VARYING(50) COLLATE pg_catalog."default", create_time TIMESTAMP (6) without TIME zone, update_user CHARACTER VARYING(50) COLLATE pg_catalog."default", update_time TIMESTAMP (6) without TIME zone);
+
+	INSERT INTO tps_game_manage_station_temp (
+		id,
+		account1,
+		sort,
+		manage_id,
+		click_flag,
+		create_user,
+		create_time,
+		update_user,
+		update_time
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from tps_game_manage_station') AS t1(id INTEGER, account1 INTEGER, sort INTEGER, manage_id INTEGER, click_flag SMALLINT, create_user CHARACTER VARYING(50) COLLATE pg_catalog."default", create_time TIMESTAMP (6) without TIME zone, update_user CHARACTER VARYING(50) COLLATE pg_catalog."default", update_time TIMESTAMP (6) without TIME zone);
+
+	INSERT INTO tps_game_type_temp (
+		id,
+		name,
+		remark,
+		type_code,
+		create_time,
+		STATUS,
+		sort
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from tps_game_type') AS t1(id INTEGER, name CHARACTER VARYING(50) COLLATE pg_catalog."default", remark CHARACTER VARYING(500) COLLATE pg_catalog."default", type_code CHARACTER VARYING(20) COLLATE pg_catalog."default", create_time DATE, STATUS SMALLINT, sort SMALLINT);
+
+	INSERT INTO tps_platform_display_set_temp (
+		id,
+		platform_code,
+		alias,
+		sort,
+		group_id,
+		create_time,
+		update_time,
+		create_user,
+		update_user,
+		front_dis_status,
+		agent_dis_status
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from tps_platform_display_set') AS t1(id INTEGER, platform_code CHARACTER VARYING(64) COLLATE pg_catalog."default", alias CHARACTER VARYING(64) COLLATE pg_catalog."default", sort INTEGER, group_id INTEGER, create_time TIMESTAMP without TIME zone, update_time TIMESTAMP without TIME zone, create_user CHARACTER VARYING(64) COLLATE pg_catalog."default", update_user CHARACTER VARYING(64) COLLATE pg_catalog."default", front_dis_status INTEGER, agent_dis_status INTEGER);
+
+	INSERT INTO tps_platform_info_temp (
+		id,
+		platform_name,
+		platform_code,
+		code_name,
+		lowercase_code,
+		parent_platform_code,
+		create_time,
+		update_time,
+		create_user,
+		update_user,
+		STATUS,
+		type_id,
+		parent_id,
+		sort,
+		remark,
+		jockpot,
+		utc,
+		freeplay,
+		jump_type,
+		jump_param,
+		import_utc
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from tps_platform_info') AS t1(id INTEGER, platform_name CHARACTER VARYING(128) COLLATE pg_catalog."default", platform_code CHARACTER VARYING(64) COLLATE pg_catalog."default", code_name CHARACTER VARYING(64) COLLATE pg_catalog."default", lowercase_code CHARACTER VARYING(64) COLLATE pg_catalog."default", parent_platform_code CHARACTER VARYING(64) COLLATE pg_catalog."default", create_time TIMESTAMP without TIME zone, update_time TIMESTAMP without TIME zone, create_user CHARACTER VARYING(64) COLLATE pg_catalog."default", update_user CHARACTER VARYING(64) COLLATE pg_catalog."default", STATUS INTEGER, type_id INTEGER, parent_id INTEGER, sort INTEGER, remark CHARACTER VARYING(255) COLLATE pg_catalog."default", jockpot INTEGER, utc INTEGER, freeplay INTEGER, jump_type INTEGER, jump_param CHARACTER VARYING(255) COLLATE pg_catalog."default", import_utc INTEGER);
+
+	INSERT INTO tps_platform_temp (
+		id,
+		code,
+		name,
+		sort,
+		create_time,
+		STATUS,
+		remark
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from tps_platform') AS t1(id INTEGER, code CHARACTER VARYING(255) COLLATE pg_catalog."default", name CHARACTER VARYING(255) COLLATE pg_catalog."default", sort INTEGER, create_time DATE, STATUS INTEGER, remark CHARACTER VARYING(255) COLLATE pg_catalog."default");
+
+	INSERT INTO tps_pre_realtime_item_temp (
+		id,
+		platform_code,
+		parent_platform_code,
+		previous_bet_amount,
+		previous_pre_amount,
+		current_bet_amount,
+		current_pre_amount,
+		pre_realtime_record_id
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from tps_pre_realtime_item') AS t1(id BIGINT, platform_code CHARACTER VARYING(10) COLLATE pg_catalog."default", parent_platform_code CHARACTER VARYING(20) COLLATE pg_catalog."default", previous_bet_amount NUMERIC(19, 5), previous_pre_amount NUMERIC(19, 5), current_bet_amount NUMERIC(19, 5), current_pre_amount NUMERIC(19, 5), pre_realtime_record_id BIGINT);
+
+	INSERT INTO yuebao_cash_flow_temp (
+		id,
+		account1,
+		member_id,
+		member_account,
+		level_id,
+		level_name,
+		agent_id,
+		agent_account,
+		trade_type,
+		flow_type,
+		draw_type,
+		balance,
+		trade_money,
+		deposit_bill_no,
+		withdraw_bill_no,
+		remark,
+		create_time,
+		type,
+		operator_id,
+		operator_account,
+		update_time,
+		member_remark,
+        partial_withdraw_amount
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from yuebao_cash_flow') AS t1(id BIGINT, account1 INTEGER, member_id INTEGER, member_account CHARACTER VARYING(50) COLLATE pg_catalog."default", level_id INTEGER, level_name CHARACTER VARYING(50) COLLATE pg_catalog."default", agent_id INTEGER, agent_account CHARACTER VARYING(50) COLLATE pg_catalog."default", trade_type SMALLINT, flow_type SMALLINT, draw_type SMALLINT, balance NUMERIC(19, 5), trade_money NUMERIC(19, 5), deposit_bill_no CHARACTER VARYING(50) COLLATE pg_catalog."default", withdraw_bill_no CHARACTER VARYING(50) COLLATE pg_catalog."default", remark CHARACTER VARYING(500) COLLATE pg_catalog."default", create_time TIMESTAMP (6) without TIME zone, type CHARACTER VARYING(5) COLLATE pg_catalog."default", operator_id INTEGER, operator_account CHARACTER VARYING(50) COLLATE pg_catalog."default", update_time TIMESTAMP (6) without TIME zone, member_remark CHARACTER VARYING(200
+			) COLLATE pg_catalog."default", partial_withdraw_amount numeric(19,5));
+
+	INSERT INTO account_money_hour_temp (
+		id,
+		domain_url,
+		account1,
+		create_date,
+		report_date,
+		account6,
+		total_pay,
+		total_pay_num,
+		total_draw,
+		total_draw_num,
+		max_pay,
+		game_discount,
+		game_rebate,
+		game_total_pay,
+		game_total_pay_num
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from account_money_hour') AS t1(id INTEGER, domain_url CHARACTER VARYING COLLATE pg_catalog."default", account1 INTEGER, create_date TIMESTAMP without TIME zone, report_date TIMESTAMP without TIME zone, account6 INTEGER, total_pay NUMERIC(19, 2), total_pay_num INTEGER, total_draw NUMERIC(19, 2), total_draw_num INTEGER, max_pay NUMERIC(19, 2), game_discount NUMERIC(19, 2), game_rebate NUMERIC(19, 2), game_total_pay NUMERIC(19, 2), game_total_pay_num INTEGER);
+
+	INSERT INTO mny_merchant_record_temp (
+		id,
+		amount,
+		account,
+		levelname,
+		levelno,
+		STATUS,
+		paysystem,
+		remark,
+		createtime,
+		email,
+		phone,
+		memberid,
+		stockholderid,
+		memid,
+		merchant_id,
+		youhui,
+		levelid,
+		orderno,
+		merchantno,
+		manaual,
+		pay_call_date,
+		bank_key,
+		banktype,
+		wx_account,
+		wx_nickname,
+		wx_temp,
+		device,
+		payer_name
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_merchant_record') AS t1(id INTEGER, amount NUMERIC(19, 5), account CHARACTER VARYING(255), levelname CHARACTER VARYING(255), levelno INTEGER, STATUS INTEGER, paysystem CHARACTER VARYING(255), remark CHARACTER VARYING(1000), createtime TIMESTAMP without TIME zone, email CHARACTER VARYING(100), phone CHARACTER VARYING(50), memberid INTEGER, stockholderid INTEGER, memid INTEGER, merchant_id INTEGER, youhui CHARACTER VARYING, levelid INTEGER, orderno CHARACTER VARYING, merchantno CHARACTER VARYING, manaual INTEGER, pay_call_date TIMESTAMP without TIME zone, bank_key CHARACTER VARYING(100), banktype INTEGER, wx_account CHARACTER VARYING(255), wx_nickname CHARACTER VARYING(255), wx_temp CHARACTER VARYING(255), device INTEGER, payer_name CHARACTER VARYING(50));
+
+	INSERT INTO mny_companyaccount_temp (
+		companyaccount_id,
+		currency_id,
+		ddgd_id,
+		bank_id,
+		bankaccount,
+		prompt,
+		chamberlain,
+		bankstation,
+		mbankaccount,
+		SHUTDOWN,
+		isdetele,
+		founder,
+		foundtime,
+		moder,
+		modtime,
+		qr_code,
+		max_deposit,
+		curr_deposit,
+		accountorder,
+		online_bank_name,
+		online_bank_account,
+		isbank,
+		merchant_comment,
+		ask_status,
+		min_deposit_amount,
+		max_deposit_amount,
+		currency,
+		exchange_rate,
+		maximum_discount
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_companyaccount') AS t1(companyaccount_id INTEGER, currency_id INTEGER, ddgd_id INTEGER, bank_id INTEGER, bankaccount CHARACTER VARYING, prompt CHARACTER VARYING, chamberlain CHARACTER VARYING(200), bankstation CHARACTER VARYING, mbankaccount CHARACTER VARYING(200), SHUTDOWN INTEGER, isdetele INTEGER, founder CHARACTER VARYING, foundtime TIMESTAMP without TIME zone, moder CHARACTER VARYING, modtime TIMESTAMP without TIME zone, qr_code CHARACTER VARYING(100), max_deposit DOUBLE PRECISION, curr_deposit DOUBLE PRECISION, accountorder INTEGER, online_bank_name CHARACTER VARYING(50), online_bank_account CHARACTER VARYING(50), isbank INTEGER, merchant_comment TEXT, ask_status INTEGER, min_deposit_amount NUMERIC(19, 5), max_deposit_amount NUMERIC(19, 5), currency CHARACTER VARYING(50), exchange_rate NUMERIC(19, 5), maximum_discount NUMERIC(19, 5));
+
+	INSERT INTO recharge_manage_base_temp (
+		id,
+		name,
+		recharge_type,
+		recharge_type_id,
+		order_index,
+		online_or_offline,
+		picture_address,
+		terminal,
+		income_name,
+		pay_type,
+		is_show
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from recharge_manage_base') AS t1(id INTEGER, name CHARACTER VARYING(50), recharge_type CHARACTER VARYING(50), recharge_type_id INTEGER, order_index INTEGER, online_or_offline INTEGER, picture_address CHARACTER VARYING(255), terminal INTEGER, income_name CHARACTER VARYING(255), pay_type CHARACTER VARYING(50), is_show SMALLINT);
+
+	INSERT INTO mny_bank_list_temp (
+		id,
+		bankname,
+		bankkey,
+		banktype,
+		isbank,
+		sortnum
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_bank_list') AS t1(id INTEGER, bankname CHARACTER VARYING(255), bankkey CHARACTER VARYING(50), banktype INTEGER, isbank INTEGER, sortnum INTEGER);
+
+	INSERT INTO yuebao_funds_pool_temp (
+		id,
+		account1,
+		member_id,
+		member_account,
+		amount,
+		level_id,
+		level_name,
+		deposit_time,
+		end_time,
+		withdraw_time,
+		interest_rate,
+		addition_interest_rate,
+		interest_cycle,
+		interest,
+		withdraw_account,
+		end_account,
+		STATUS,
+		remark,
+		type,
+		deposit_bill_no,
+		withdraw_bill_no,
+		trade_type,
+		member_remark,
+		deposit_device,
+		draw_device,
+		org_deposit_bill_no,
+		partial_withdraw_amount
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from yuebao_funds_pool') AS t1(id INTEGER, account1 INTEGER, member_id INTEGER, member_account CHARACTER VARYING(50), amount NUMERIC(19, 5), level_id INTEGER, level_name CHARACTER VARYING(50), deposit_time TIMESTAMP (6), end_time TIMESTAMP (6), withdraw_time TIMESTAMP (6), interest_rate NUMERIC(7, 4), addition_interest_rate NUMERIC(7, 4), interest_cycle INTEGER, interest NUMERIC(19, 5), withdraw_account CHARACTER VARYING(50), end_account CHARACTER VARYING(50), STATUS SMALLINT, remark CHARACTER VARYING(500), type CHARACTER VARYING(5), deposit_bill_no CHARACTER VARYING(50), withdraw_bill_no CHARACTER VARYING(50), trade_type INTEGER, member_remark CHARACTER VARYING(200), deposit_device INTEGER, draw_device INTEGER, org_deposit_bill_no CHARACTER VARYING(50), partial_withdraw_amount NUMERIC(19, 5));
+
+	INSERT INTO mny_com_record_temp (
+		com_record_id,
+		order_no,
+		level_id,
+		partner_id,
+		member_id,
+		deposit_type,
+		deposit_money,
+		deposit_pre,
+		other_pre,
+		STATUS,
+		create_user,
+		create_time,
+		update_user,
+		update_time,
+		system_time,
+		deposit_pre_status,
+		other_pre_status,
+		comp_bet_check_status,
+		comp_bet,
+		normal_check_status,
+		deposit_project_id,
+		deposit_money_remark,
+		deposit_pre_remark,
+		other_pre_remark,
+		stockholder_id,
+		currency_id,
+		bank_account_id,
+		bb_limit,
+		comp_num_check,
+		deposit_man_name,
+		pre_rem_per_check,
+		member_deposit_bank_id,
+		mem_bank_account,
+		mem_bank_name,
+		level_name,
+		account1,
+		account2,
+		account3,
+		account4,
+		account5,
+		rate,
+		account,
+		type,
+		agent_account,
+		chamberlain,
+		company_bank_id,
+		wx_account,
+		wx_nickname,
+		isbank,
+		device,
+		mapping_index,
+		usdt_number,
+		exchange_rate,
+		currency
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_com_record') AS t1(com_record_id INTEGER, order_no CHARACTER VARYING, level_id INTEGER, partner_id INTEGER, member_id INTEGER, deposit_type CHARACTER VARYING, deposit_money NUMERIC, deposit_pre NUMERIC, other_pre NUMERIC, STATUS INTEGER, create_user CHARACTER VARYING, create_time TIMESTAMP without TIME zone, update_user CHARACTER VARYING, update_time TIMESTAMP without TIME zone, system_time TIMESTAMP without TIME zone, deposit_pre_status INTEGER, other_pre_status INTEGER, comp_bet_check_status INTEGER, comp_bet NUMERIC(19, 5), normal_check_status INTEGER, deposit_project_id INTEGER, deposit_money_remark CHARACTER VARYING, deposit_pre_remark CHARACTER VARYING, other_pre_remark CHARACTER VARYING, stockholder_id INTEGER, currency_id INTEGER, bank_account_id INTEGER, bb_limit NUMERIC(19, 5), comp_num_check INTEGER, deposit_man_name CHARACTER VARYING, pre_rem_per_check INTEGER, member_deposit_bank_id INTEGER, 
+			mem_bank_account CHARACTER VARYING, mem_bank_name CHARACTER VARYING, level_name CHARACTER VARYING(50), account1 INTEGER, account2 INTEGER, account3 INTEGER, account4 INTEGER, account5 INTEGER, rate INTEGER, account CHARACTER VARYING(50), type CHARACTER VARYING(50), agent_account CHARACTER VARYING(30), chamberlain CHARACTER VARYING(200), company_bank_id INTEGER, wx_account CHARACTER VARYING(255), wx_nickname CHARACTER VARYING(255), isbank INTEGER, device INTEGER, mapping_index INTEGER, usdt_number CHARACTER VARYING, exchange_rate CHARACTER VARYING, currency CHARACTER VARYING);
+
+	INSERT INTO mny_event_details_temp (
+		details_id,
+		member_id,
+		create_user,
+		create_time,
+		update_user,
+		update_time,
+		backdrop_state,
+		stockholder_id,
+		event_id,
+		eventuuid,
+		count_money,
+		STATUS,
+		pre_realtime_record_ids
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_event_details') AS t1(details_id INTEGER, member_id INTEGER, create_user CHARACTER VARYING, create_time TIMESTAMP without TIME zone, update_user CHARACTER VARYING, update_time TIMESTAMP without TIME zone, backdrop_state CHARACTER VARYING, stockholder_id INTEGER, event_id INTEGER, eventuuid CHARACTER VARYING(36), count_money NUMERIC(25, 2), STATUS INTEGER, pre_realtime_record_ids BIGINT []);
+
+	INSERT INTO rebate_game_category_temp (
+		id,
+		platform_code,
+		platform_name,
+		game_id,
+		game_name,
+		category_code,
+		category_name,
+		use_type,
+		sort_factor
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from rebate_game_category') AS t1(id INTEGER, platform_code CHARACTER VARYING(20), platform_name CHARACTER VARYING, game_id CHARACTER VARYING(20), game_name CHARACTER VARYING, category_code CHARACTER VARYING(20), category_name CHARACTER VARYING, use_type CHARACTER VARYING(3), sort_factor NUMERIC(6, 5));
+
+	INSERT INTO tps_event_details_temp (
+		id,
+		platform,
+		game_code,
+		bet_total,
+		pre,
+		member_id,
+		event_uuid
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from tps_event_details') AS t1(id INTEGER, platform CHARACTER VARYING(20), game_code CHARACTER VARYING(20), bet_total NUMERIC(19, 5), pre NUMERIC(19, 5), member_id INTEGER, event_uuid CHARACTER VARYING(100));
+
+	INSERT INTO sn_info_temp (
+	sn,
+	sn_info,
+	type
+	)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from sn_info') AS t1(sn INTEGER, sn_info CHARACTER VARYING COLLATE pg_catalog."default", type CHARACTER VARYING(1) COLLATE pg_catalog."default");
+
+	---step 3 rename table to t1     
+	ALTER TABLE api_betting_detail RENAME TO api_betting_detail_t1;
+
+	ALTER TABLE at_account RENAME TO at_account_t1;
+
+	ALTER TABLE at_current_record_stretch RENAME TO at_current_record_stretch_t1;
+
+	ALTER TABLE at_current_total RENAME TO at_current_total_t1;
+
+	ALTER TABLE at_member_login RENAME TO at_member_login_t1;
+
+	ALTER TABLE ge_login RENAME TO ge_login_t1;
+
+	ALTER TABLE ge_station RENAME TO ge_station_t1;
+
+	ALTER TABLE mny_currency RENAME TO mny_currency_t1;
+
+	ALTER TABLE mny_level_currency RENAME TO mny_level_currency_t1;
+
+	ALTER TABLE mny_levelmanagement RENAME TO mny_levelmanagement_t1;
+
+	ALTER TABLE mny_pre_realtime_record RENAME TO mny_pre_realtime_record_t1;
+
+	ALTER TABLE rebate_betting_record RENAME TO rebate_betting_record_t1;
+
+	ALTER TABLE sys_log_url RENAME TO sys_log_url_t1;
+
+	ALTER TABLE sys_run_date RENAME TO sys_run_date_t1;
+
+	ALTER TABLE tps_account_info RENAME TO tps_account_info_t1;
+
+	ALTER TABLE tps_game_manage RENAME TO tps_game_manage_t1;
+
+	ALTER TABLE tps_game_manage_station RENAME TO tps_game_manage_station_t1;
+
+	ALTER TABLE tps_game_type RENAME TO tps_game_type_t1;
+
+	ALTER TABLE tps_platform RENAME TO tps_platform_t1;
+
+	ALTER TABLE tps_platform_display_set RENAME TO tps_platform_display_set_t1;
+
+	ALTER TABLE tps_platform_info RENAME TO tps_platform_info_t1;
+
+	ALTER TABLE tps_pre_realtime_item RENAME TO tps_pre_realtime_item_t1;
+
+	ALTER TABLE yuebao_cash_flow RENAME TO yuebao_cash_flow_t1;
+
+	ALTER TABLE account_money_hour RENAME TO account_money_hour_t1;
+
+	ALTER TABLE mny_merchant_record RENAME TO mny_merchant_record_t1;
+
+	ALTER TABLE mny_companyaccount RENAME TO mny_companyaccount_t1;
+
+	ALTER TABLE recharge_manage_base RENAME TO recharge_manage_base_t1;
+
+	ALTER TABLE mny_bank_list RENAME TO mny_bank_list_t1;
+
+	ALTER TABLE yuebao_funds_pool RENAME TO yuebao_funds_pool_t1;
+
+	ALTER TABLE mny_com_record RENAME TO mny_com_record_t1;
+
+	ALTER TABLE mny_event_details RENAME TO mny_event_details_t1;
+
+	ALTER TABLE tps_event_details RENAME TO tps_event_details_t1;
+
+	ALTER TABLE rebate_game_category RENAME TO rebate_game_category_t1;
+
+	ALTER TABLE sn_info RENAME TO sn_info_t1;
+
+	---step 4 rename temp table
+	ALTER TABLE api_betting_detail_temp RENAME TO api_betting_detail;
+
+	ALTER TABLE at_account_temp RENAME TO at_account;
+
+	ALTER TABLE at_current_record_stretch_temp RENAME TO at_current_record_stretch;
+
+	ALTER TABLE at_current_total_temp RENAME TO at_current_total;
+
+	ALTER TABLE at_member_login_temp RENAME TO at_member_login;
+
+	ALTER TABLE ge_login_temp RENAME TO ge_login;
+
+	ALTER TABLE ge_station_temp RENAME TO ge_station;
+
+	ALTER TABLE mny_currency_temp RENAME TO mny_currency;
+
+	ALTER TABLE mny_level_currency_temp RENAME TO mny_level_currency;
+
+	ALTER TABLE mny_levelmanagement_temp RENAME TO mny_levelmanagement;
+
+	ALTER TABLE mny_pre_realtime_record_temp RENAME TO mny_pre_realtime_record;
+
+	ALTER TABLE rebate_betting_record_temp RENAME TO rebate_betting_record;
+
+	ALTER TABLE sys_log_url_temp RENAME TO sys_log_url;
+
+	ALTER TABLE sys_run_date_temp RENAME TO sys_run_date;
+
+	ALTER TABLE tps_account_info_temp RENAME TO tps_account_info;
+
+	ALTER TABLE tps_game_manage_temp RENAME TO tps_game_manage;
+
+	ALTER TABLE tps_game_manage_station_temp RENAME TO tps_game_manage_station;
+
+	ALTER TABLE tps_game_type_temp RENAME TO tps_game_type;
+
+	ALTER TABLE tps_platform_temp RENAME TO tps_platform;
+
+	ALTER TABLE tps_platform_display_set_temp RENAME TO tps_platform_display_set;
+
+	ALTER TABLE tps_platform_info_temp RENAME TO tps_platform_info;
+
+	ALTER TABLE tps_pre_realtime_item_temp RENAME TO tps_pre_realtime_item;
+
+	ALTER TABLE yuebao_cash_flow_temp RENAME TO yuebao_cash_flow;
+
+	ALTER TABLE account_money_hour_temp RENAME TO account_money_hour;
+
+	ALTER TABLE mny_merchant_record_temp RENAME TO mny_merchant_record;
+
+	ALTER TABLE mny_companyaccount_temp RENAME TO mny_companyaccount;
+
+	ALTER TABLE recharge_manage_base_temp RENAME TO recharge_manage_base;
+
+	ALTER TABLE mny_bank_list_temp RENAME TO mny_bank_list;
+
+	ALTER TABLE yuebao_funds_pool_temp RENAME TO yuebao_funds_pool;
+
+	ALTER TABLE mny_com_record_temp RENAME TO mny_com_record;
+
+	ALTER TABLE mny_event_details_temp RENAME TO mny_event_details;
+
+	ALTER TABLE tps_event_details_temp RENAME TO tps_event_details;
+
+	ALTER TABLE rebate_game_category_temp RENAME TO rebate_game_category;
+
+	ALTER TABLE sn_info_temp RENAME TO sn_info;
+
+	---step 5 rename t1 to temp
+	ALTER TABLE api_betting_detail_t1 RENAME TO api_betting_detail_temp;
+
+	ALTER TABLE at_account_t1 RENAME TO at_account_temp;
+
+	ALTER TABLE at_current_record_stretch_t1 RENAME TO at_current_record_stretch_temp;
+
+	ALTER TABLE at_current_total_t1 RENAME TO at_current_total_temp;
+
+	ALTER TABLE at_member_login_t1 RENAME TO at_member_login_temp;
+
+	ALTER TABLE ge_login_t1 RENAME TO ge_login_temp;
+
+	ALTER TABLE ge_station_t1 RENAME TO ge_station_temp;
+
+	ALTER TABLE mny_currency_t1 RENAME TO mny_currency_temp;
+
+	ALTER TABLE mny_level_currency_t1 RENAME TO mny_level_currency_temp;
+
+	ALTER TABLE mny_levelmanagement_t1 RENAME TO mny_levelmanagement_temp;
+
+	ALTER TABLE mny_pre_realtime_record_t1 RENAME TO mny_pre_realtime_record_temp;
+
+	ALTER TABLE rebate_betting_record_t1 RENAME TO rebate_betting_record_temp;
+
+	ALTER TABLE sys_log_url_t1 RENAME TO sys_log_url_temp;
+
+	ALTER TABLE sys_run_date_t1 RENAME TO sys_run_date_temp;
+
+	ALTER TABLE tps_account_info_t1 RENAME TO tps_account_info_temp;
+
+	ALTER TABLE tps_game_manage_t1 RENAME TO tps_game_manage_temp;
+
+	ALTER TABLE tps_game_manage_station_t1 RENAME TO tps_game_manage_station_temp;
+
+	ALTER TABLE tps_game_type_t1 RENAME TO tps_game_type_temp;
+
+	ALTER TABLE tps_platform_t1 RENAME TO tps_platform_temp;
+
+	ALTER TABLE tps_platform_display_set_t1 RENAME TO tps_platform_display_set_temp;
+
+	ALTER TABLE tps_platform_info_t1 RENAME TO tps_platform_info_temp;
+
+	ALTER TABLE tps_pre_realtime_item_t1 RENAME TO tps_pre_realtime_item_temp;
+
+	ALTER TABLE yuebao_cash_flow_t1 RENAME TO yuebao_cash_flow_temp;
+
+	ALTER TABLE account_money_hour_t1 RENAME TO account_money_hour_temp;
+
+	ALTER TABLE mny_merchant_record_t1 RENAME TO mny_merchant_record_temp;
+
+	ALTER TABLE mny_companyaccount_t1 RENAME TO mny_companyaccount_temp;
+
+	ALTER TABLE recharge_manage_base_t1 RENAME TO recharge_manage_base_temp;
+
+	ALTER TABLE mny_bank_list_t1 RENAME TO mny_bank_list_temp;
+
+	ALTER TABLE yuebao_funds_pool_t1 RENAME TO yuebao_funds_pool_temp;
+
+	ALTER TABLE mny_com_record_t1 RENAME TO mny_com_record_temp;
+
+	ALTER TABLE mny_event_details_t1 RENAME TO mny_event_details_temp;
+
+	ALTER TABLE tps_event_details_t1 RENAME TO tps_event_details_temp;
+
+	ALTER TABLE rebate_game_category_t1 RENAME TO rebate_game_category_temp;
+
+	ALTER TABLE sn_info_t1 RENAME TO sn_info_temp;
+
+END;$BODY$;
+
+ALTER FUNCTION "GPO".fun_halfsearch_table_sync_all () OWNER TO "PcHTa4478A";
