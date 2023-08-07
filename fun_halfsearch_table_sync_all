@@ -650,10 +650,11 @@ BEGIN
 		wx_nickname,
 		wx_temp,
 		device,
-		payer_name
+		payer_name,
+		deposit_fee_amount
 		)
 	SELECT *
-	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_merchant_record') AS t1(id INTEGER, amount NUMERIC(19, 5), account CHARACTER VARYING(255), levelname CHARACTER VARYING(255), levelno INTEGER, STATUS INTEGER, paysystem CHARACTER VARYING(255), remark CHARACTER VARYING(1000), createtime TIMESTAMP without TIME zone, email CHARACTER VARYING(100), phone CHARACTER VARYING(50), memberid INTEGER, stockholderid INTEGER, memid INTEGER, merchant_id INTEGER, youhui CHARACTER VARYING, levelid INTEGER, orderno CHARACTER VARYING, merchantno CHARACTER VARYING, manaual INTEGER, pay_call_date TIMESTAMP without TIME zone, bank_key CHARACTER VARYING(100), banktype INTEGER, wx_account CHARACTER VARYING(255), wx_nickname CHARACTER VARYING(255), wx_temp CHARACTER VARYING(255), device INTEGER, payer_name CHARACTER VARYING(50));
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_merchant_record') AS t1(id INTEGER, amount NUMERIC(19, 5), account CHARACTER VARYING(255), levelname CHARACTER VARYING(255), levelno INTEGER, STATUS INTEGER, paysystem CHARACTER VARYING(255), remark CHARACTER VARYING(1000), createtime TIMESTAMP without TIME zone, email CHARACTER VARYING(100), phone CHARACTER VARYING(50), memberid INTEGER, stockholderid INTEGER, memid INTEGER, merchant_id INTEGER, youhui CHARACTER VARYING, levelid INTEGER, orderno CHARACTER VARYING, merchantno CHARACTER VARYING, manaual INTEGER, pay_call_date TIMESTAMP without TIME zone, bank_key CHARACTER VARYING(100), banktype INTEGER, wx_account CHARACTER VARYING(255), wx_nickname CHARACTER VARYING(255), wx_temp CHARACTER VARYING(255), device INTEGER, payer_name CHARACTER VARYING(50), deposit_fee_amount numeric(19, 2));
 
 	INSERT INTO mny_companyaccount_temp (
 		companyaccount_id,
