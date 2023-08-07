@@ -214,11 +214,13 @@ BEGIN
 		yuebao_draw,
 		yuebao_draw_person_num,
 		yuebao_income,
-		yuebao_income_person_num
+		yuebao_income_person_num,
+    	        deposit_fee,
+	        deposit_fee_num
 		)
 	SELECT *
 	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from at_current_total') AS t1(id INTEGER, account1 INTEGER, account5 INTEGER, account6 INTEGER, agent_account CHARACTER VARYING COLLATE pg_catalog."default", member_account CHARACTER VARYING COLLATE pg_catalog."default", company_income NUMERIC(19, 2), member_draw NUMERIC(19, 2), online_come NUMERIC(19, 2), coupon NUMERIC(19, 2), manual_income NUMERIC(19, 2), draw NUMERIC(19, 2), draw_fee NUMERIC(19, 2), defect NUMERIC(19, 2), show_date DATE, currency_id INTEGER, company_income_person_num INTEGER, member_draw_person_num INTEGER, online_income_person_num INTEGER, coupon_person_num INTEGER, manual_income_person_num INTEGER, draw_person_num INTEGER, draw_fee_person_num INTEGER, defect_person_num INTEGER, type CHARACTER VARYING(5) COLLATE pg_catalog."default", promotion_rebate NUMERIC(19, 2), promotion_rebate_person_num INTEGER, yuebao_draw NUMERIC(19, 2), yuebao_draw_person_num INTEGER, yuebao_income NUMERIC(19, 2), 
-			yuebao_income_person_num INTEGER);
+			yuebao_income_person_num INTEGER, deposit_fee numeric(19,2), deposit_fee_num integer);
 
 	INSERT INTO at_member_login_temp (
 		account_id,
