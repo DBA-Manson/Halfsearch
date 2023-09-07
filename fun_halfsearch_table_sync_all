@@ -1068,6 +1068,24 @@ BEGIN
 
 	ALTER TABLE sn_info_t1 RENAME TO sn_info_temp;
 
+	---20230907新增加入同步
+	TRUNCATE TABLE ge_station_setting;
+
+	INSERT INTO ge_station_setting (
+		id,
+		account1,
+		station_id,
+		type,
+		value,
+		create_time,
+		create_user,
+		update_time,
+		update_user,
+		descr
+		)
+	SELECT *
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from ge_station_setting') AS t1(id BIGINT, account1 INTEGER, station_id INTEGER, type CHARACTER VARYING(50), value CHARACTER VARYING(1000), create_time TIMESTAMP (6), create_user CHARACTER VARYING(50), update_time TIMESTAMP (6) without TIME zone, update_user CHARACTER VARYING(50), descr CHARACTER VARYING(255) COLLATE pg_catalog."default");
+
 END;$BODY$;
 
 ALTER FUNCTION "GPO".fun_halfsearch_table_sync_all () OWNER TO "PcHTa4478A";
