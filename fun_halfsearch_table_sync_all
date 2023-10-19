@@ -1,6 +1,14 @@
-CREATE
-	OR REPLACE FUNCTION "GPO".fun_halfsearch_table_sync_all ()
-RETURNS void LANGUAGE 'plpgsql' COST 100 VOLATILE PARALLEL UNSAFE AS $BODY$
+-- FUNCTION: GPO.fun_halfsearch_table_sync_all()
+
+-- DROP FUNCTION IF EXISTS "GPO".fun_halfsearch_table_sync_all();
+
+CREATE OR REPLACE FUNCTION "GPO".fun_halfsearch_table_sync_all(
+	)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
 
 BEGIN
 	---edit by Manson
@@ -215,12 +223,12 @@ BEGIN
 		yuebao_draw_person_num,
 		yuebao_income,
 		yuebao_income_person_num,
-    	        deposit_fee,
-	        deposit_fee_num
+		deposit_fee,
+		deposit_fee_num
 		)
 	SELECT *
 	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from at_current_total') AS t1(id INTEGER, account1 INTEGER, account5 INTEGER, account6 INTEGER, agent_account CHARACTER VARYING COLLATE pg_catalog."default", member_account CHARACTER VARYING COLLATE pg_catalog."default", company_income NUMERIC(19, 2), member_draw NUMERIC(19, 2), online_come NUMERIC(19, 2), coupon NUMERIC(19, 2), manual_income NUMERIC(19, 2), draw NUMERIC(19, 2), draw_fee NUMERIC(19, 2), defect NUMERIC(19, 2), show_date DATE, currency_id INTEGER, company_income_person_num INTEGER, member_draw_person_num INTEGER, online_income_person_num INTEGER, coupon_person_num INTEGER, manual_income_person_num INTEGER, draw_person_num INTEGER, draw_fee_person_num INTEGER, defect_person_num INTEGER, type CHARACTER VARYING(5) COLLATE pg_catalog."default", promotion_rebate NUMERIC(19, 2), promotion_rebate_person_num INTEGER, yuebao_draw NUMERIC(19, 2), yuebao_draw_person_num INTEGER, yuebao_income NUMERIC(19, 2), 
-			yuebao_income_person_num INTEGER, deposit_fee numeric(19,2), deposit_fee_num integer);
+			yuebao_income_person_num INTEGER, deposit_fee NUMERIC(19, 2), deposit_fee_num INTEGER);
 
 	INSERT INTO at_member_login_temp (
 		account_id,
@@ -596,11 +604,11 @@ BEGIN
 		operator_account,
 		update_time,
 		member_remark,
-        partial_withdraw_amount
+		partial_withdraw_amount
 		)
 	SELECT *
 	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from yuebao_cash_flow') AS t1(id BIGINT, account1 INTEGER, member_id INTEGER, member_account CHARACTER VARYING(50) COLLATE pg_catalog."default", level_id INTEGER, level_name CHARACTER VARYING(50) COLLATE pg_catalog."default", agent_id INTEGER, agent_account CHARACTER VARYING(50) COLLATE pg_catalog."default", trade_type SMALLINT, flow_type SMALLINT, draw_type SMALLINT, balance NUMERIC(19, 5), trade_money NUMERIC(19, 5), deposit_bill_no CHARACTER VARYING(50) COLLATE pg_catalog."default", withdraw_bill_no CHARACTER VARYING(50) COLLATE pg_catalog."default", remark CHARACTER VARYING(500) COLLATE pg_catalog."default", create_time TIMESTAMP (6) without TIME zone, type CHARACTER VARYING(5) COLLATE pg_catalog."default", operator_id INTEGER, operator_account CHARACTER VARYING(50) COLLATE pg_catalog."default", update_time TIMESTAMP (6) without TIME zone, member_remark CHARACTER VARYING(200
-			) COLLATE pg_catalog."default", partial_withdraw_amount numeric(19,5));
+			) COLLATE pg_catalog."default", partial_withdraw_amount NUMERIC(19, 5));
 
 	INSERT INTO account_money_hour_temp (
 		id,
@@ -654,7 +662,7 @@ BEGIN
 		deposit_fee_amount
 		)
 	SELECT *
-	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_merchant_record') AS t1(id INTEGER, amount NUMERIC(19, 5), account CHARACTER VARYING(255), levelname CHARACTER VARYING(255), levelno INTEGER, STATUS INTEGER, paysystem CHARACTER VARYING(255), remark CHARACTER VARYING(1000), createtime TIMESTAMP without TIME zone, email CHARACTER VARYING(100), phone CHARACTER VARYING(50), memberid INTEGER, stockholderid INTEGER, memid INTEGER, merchant_id INTEGER, youhui CHARACTER VARYING, levelid INTEGER, orderno CHARACTER VARYING, merchantno CHARACTER VARYING, manaual INTEGER, pay_call_date TIMESTAMP without TIME zone, bank_key CHARACTER VARYING(100), banktype INTEGER, wx_account CHARACTER VARYING(255), wx_nickname CHARACTER VARYING(255), wx_temp CHARACTER VARYING(255), device INTEGER, payer_name CHARACTER VARYING(50), deposit_fee_amount numeric(19, 2));
+	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from mny_merchant_record') AS t1(id INTEGER, amount NUMERIC(19, 5), account CHARACTER VARYING(255), levelname CHARACTER VARYING(255), levelno INTEGER, STATUS INTEGER, paysystem CHARACTER VARYING(255), remark CHARACTER VARYING(1000), createtime TIMESTAMP without TIME zone, email CHARACTER VARYING(100), phone CHARACTER VARYING(50), memberid INTEGER, stockholderid INTEGER, memid INTEGER, merchant_id INTEGER, youhui CHARACTER VARYING, levelid INTEGER, orderno CHARACTER VARYING, merchantno CHARACTER VARYING, manaual INTEGER, pay_call_date TIMESTAMP without TIME zone, bank_key CHARACTER VARYING(100), banktype INTEGER, wx_account CHARACTER VARYING(255), wx_nickname CHARACTER VARYING(255), wx_temp CHARACTER VARYING(255), device INTEGER, payer_name CHARACTER VARYING(50), deposit_fee_amount NUMERIC(19, 2));
 
 	INSERT INTO mny_companyaccount_temp (
 		companyaccount_id,
@@ -854,10 +862,10 @@ BEGIN
 	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from tps_event_details') AS t1(id INTEGER, platform CHARACTER VARYING(20), game_code CHARACTER VARYING(20), bet_total NUMERIC(19, 5), pre NUMERIC(19, 5), member_id INTEGER, event_uuid CHARACTER VARYING(100));
 
 	INSERT INTO sn_info_temp (
-	sn,
-	sn_info,
-	type
-	)
+		sn,
+		sn_info,
+		type
+		)
 	SELECT *
 	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from sn_info') AS t1(sn INTEGER, sn_info CHARACTER VARYING COLLATE pg_catalog."default", type CHARACTER VARYING(1) COLLATE pg_catalog."default");
 
@@ -1085,7 +1093,28 @@ BEGIN
 		)
 	SELECT *
 	FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from ge_station_setting') AS t1(id BIGINT, account1 INTEGER, station_id INTEGER, type CHARACTER VARYING(50), value CHARACTER VARYING(1000), create_time TIMESTAMP (6), create_user CHARACTER VARYING(50), update_time TIMESTAMP (6) without TIME zone, update_user CHARACTER VARYING(50), descr CHARACTER VARYING(255) COLLATE pg_catalog."default");
+	
+  ---20231019新增加入同步
+  TRUNCATE TABLE ge_login_password_setting;
+  INSERT INTO ge_login_password_setting (
+	id,
+	account1,
+	member_status,
+	member_cycle,
+	member_reminder,
+	sub_account_status,
+	sub_account_cycle,
+	sub_account_reminder,
+	create_time,
+	update_time,
+	sh_mpwd_symbol,
+	member_changepwd
+	)
+SELECT *
+FROM dblink('hostaddr=10.15.62.16 port=11532 dbname=GPO user=MylIZ8UUIFO7KZBh1hXEnCPHqugzAm password=UHJkduxk*&^%kjsi6482@31L_$sl733', 'select * from ge_login_password_setting') AS t1(id INTEGER , account1 INTEGER, member_status INTEGER, member_cycle CHARACTER VARYING(32) COLLATE pg_catalog."default", member_reminder INTEGER, sub_account_status INTEGER, sub_account_cycle CHARACTER VARYING(32) COLLATE pg_catalog."default", sub_account_reminder INTEGER, create_time TIMESTAMP (6) without TIME zone, update_time TIMESTAMP (6) without TIME zone, sh_mpwd_symbol CHARACTER VARYING COLLATE pg_catalog."default", member_changepwd INTEGER);
 
-END;$BODY$;
+END;
+$BODY$;
 
-ALTER FUNCTION "GPO".fun_halfsearch_table_sync_all () OWNER TO "PcHTa4478A";
+ALTER FUNCTION "GPO".fun_halfsearch_table_sync_all()
+    OWNER TO "PcHTa4478A";
